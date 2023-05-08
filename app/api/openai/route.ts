@@ -74,7 +74,6 @@ export const GET = async (req: Request) => {
     headers: {
       "Content-Type": "application/json",
       'Authorization': `Bearer ${TOKENOPENAI}`,
-      'OpenAI-Organization': 'org-f4kTC3ohKO04kvFmVilSEpZv'
     },
     referrerPolicy: "no-referrer",
   }).then(e => e.json())
