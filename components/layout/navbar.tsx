@@ -39,8 +39,8 @@ export default function NavBar({ session, openai }: { session: Session | null , 
               <>
               <Image
                 className="rounded-full"
-                alt={openai.user.user.email ?? 'email'}
-                src={openai.user.user.picture                  || `https://avatars.dicebear.com/api/micah/${openai.user.user.email}.svg`}
+                alt={openai.user.user?.email ?? 'email'}
+                src={openai.user.user?.picture                  || `https://avatars.dicebear.com/api/micah/${openai.user.user?.email}.svg`}
                 width={40}
                 height={40}
               />

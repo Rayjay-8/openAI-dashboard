@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server'
 import { redirect } from 'next/navigation';
 
+const today = new Date()
+const initDate = new Date()
+const tomorrow = new Date(today)
+tomorrow.setDate(tomorrow.getDate() + 1)
+initDate.setDate(1)
+
 const TOKENOPENAI = process.env.OPENAI_BEARER_TOKEN
 const TOKENAI = process.env.OPENAI_API_KEY
 const URLLOGIN = `https://api.openai.com/dashboard/onboarding/login`
-const URL = `https://api.openai.com/dashboard/billing/usage?end_date=2023-05-09&start_date=2023-05-01`
+const URL = `https://api.openai.com/dashboard/billing/usage?end_date=${tomorrow.toISOString().split('T')[0]}&start_date=${initDate.toISOString().split('T')[0]}`
 const URLINFOLIMIT = 'https://api.openai.com/dashboard/billing/subscription'
 
 
