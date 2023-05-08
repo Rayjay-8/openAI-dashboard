@@ -9,7 +9,7 @@ export default function Footer() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Steven Tey
+          Ray S. Arruda
         </a>
       </p>
     </div>
