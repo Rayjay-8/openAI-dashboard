@@ -19,9 +19,3 @@ dados de soft and hard limit
 https://api.openai.com/dashboard/billing/subscription
 
 usando como autorização o user.session.sensitive_id
-
-## APIs usadas para pegar dados!
-
-https://api-iam.intercom.io/messenger/web/ping
-
-https://api.openai.com/dashboard/billing/usage?end_date=2023-06-01&start_date=2023-05-01

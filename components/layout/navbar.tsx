@@ -30,7 +30,7 @@ export default function NavBar({ session, openai }: { session: Session | null , 
               height="30"
               className="mr-2 rounded-sm"
             ></Image>
-            <p>openAi Dashboard</p>
+            <p> Dashboard</p>
           </Link>
           <div>
             {session ? (

@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 const TOKENOPENAI = process.env.OPENAI_BEARER_TOKEN
 const TOKENAI = process.env.OPENAI_API_KEY
 const URLLOGIN = `https://api.openai.com/dashboard/onboarding/login`
-const URL = `https://api.openai.com/dashboard/billing/usage?end_date=2023-06-01&start_date=2023-05-01`
+const URL = `https://api.openai.com/dashboard/billing/usage?end_date=2023-05-09&start_date=2023-05-01`
 const URLINFOLIMIT = 'https://api.openai.com/dashboard/billing/subscription'
 
 

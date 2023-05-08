@@ -6,7 +6,6 @@ const DashboardOpenAi = async () => {
 
   return (
       <>
-      <h2>injetado</h2>
       <DashBoardCli openai={openai.data} billing={openai.limit}/>
       </>
   )
