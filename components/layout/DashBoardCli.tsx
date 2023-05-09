@@ -229,7 +229,7 @@ const BarChartz = ({data, categories, total}) => {
  }
 
 const DashBoardCli = ({ openai, billing }: { openai: dataDash, billing: Billing }) => {
-   const formatado = openai.daily_costs.map(e => {
+   const formatado = openai.daily_costs?.map(e => {
       const data = new Date(e.timestamp * 1000)
       e.mes = monthNames[data.getMonth()]+" "+data.getDate()
       const final:any = {}
@@ -246,6 +246,17 @@ const DashBoardCli = ({ openai, billing }: { openai: dataDash, billing: Billing 
    const usoTotal = (openai.total_usage ?? 0) / 100
    const TotalFormadado = (usoTotal).toLocaleString("en-US", {style:"currency", currency:"USD"});
 
+   if(!formatado){
+      return (
+         <>
+            <div className="max-w-md mx-auto text-center">
+               <h2 className="font-heading mb-3 text-2xl font-semibold">It&rsquo;s a bit empty here</h2>
+               <p className="mb-7 text-neutral-500">something is missing, it was not possible to get the data from the api, check that the keys are correct and try again!</p>
+               
+            </div>
+         </>
+      )
+   }
   return (
     <>
     <Title>OpenAI Analytics</Title>
