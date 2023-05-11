@@ -1,5 +1,5 @@
 
-# openAI-dashboard
+# openAI-Dashboard
 openAI-dashboard is a Dashboard that allows the user to visualize in a clear and intuitive way how OpenAI models are being used.
 
 ![day](public/example1.png)
