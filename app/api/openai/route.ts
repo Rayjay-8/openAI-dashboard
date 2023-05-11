@@ -7,12 +7,10 @@ const tomorrow = new Date(today)
 tomorrow.setDate(tomorrow.getDate() + 1)
 initDate.setDate(1)
 
-const TOKENOPENAI = process.env.OPENAI_BEARER_TOKEN
 const TOKENAI = process.env.OPENAI_API_KEY
-const URLLOGIN = `https://api.openai.com/dashboard/onboarding/login`
 const URL = `https://api.openai.com/dashboard/billing/usage?end_date=${tomorrow.toISOString().split('T')[0]}&start_date=${initDate.toISOString().split('T')[0]}`
 const URLINFOLIMIT = 'https://api.openai.com/dashboard/billing/subscription'
-
+const URLREQUESTSANDTOKENS = 'https://api.openai.com/v1/usage?date='
 
 export interface Billing {
   object: string;
@@ -48,35 +46,66 @@ export interface BillingAddress {
   postal_code: string;
 }
 
-
-export interface dataDash {
-  object: string;
-  daily_costs: (DailyCostsEntity)[] ;
-  total_usage: number;
+export interface LineItemsEntity {
+  name: string;
+  cost: number;
 }
 export interface DailyCostsEntity {
   timestamp: number;
   line_items?: (LineItemsEntity)[] | null;
   mes: string;
 }
-export interface LineItemsEntity {
-  name: string;
-  cost: number;
+export interface dataDash {
+  object: string;
+  daily_costs: (DailyCostsEntity)[] ;
+  total_usage: number;
+}
+
+
+// tokens / requests
+
+export interface DataEntity {
+  aggregation_timestamp: number;
+  n_requests: number;
+  operation: string;
+  snapshot_id: string;
+  n_context: number;
+  n_context_tokens_total: number;
+  n_generated: number;
+  n_generated_tokens_total: number;
+}
+export interface Value {
+  object: string;
+  data?: (DataEntity)[] | null;
+  ft_data?: (null)[] | null;
+  dalle_api_data?: (null)[] | null;
+  whisper_api_data?: (null)[] | null;
+  current_usage_usd: number;
+}
+export interface tokensRequests {
+  status: string;
+  value: Value;
 }
 
 
 export const GET = async (req: Request) => {
-  
-  // login info
-  const userInfo = await fetch(URLLOGIN, { 
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': `Bearer ${TOKENOPENAI}`,
-    },
-    referrerPolicy: "no-referrer",
-  }).then(e => e.json())
+
+    // requests and tokesn
+    const tokensDay = Array.from({length: new Date().getDate() + 1}, (_, i) => i + 1)
+    let requestTokens = []
+    
+    for(const day of tokensDay){
+      const currentDay = new Date()
+      currentDay.setDate(day)
+      requestTokens.push(fetch(URLREQUESTSANDTOKENS+currentDay.toISOString().split('T')[0], {
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${TOKENAI}`,
+        },
+        referrerPolicy: "no-referrer",
+      }).then(e => e.json()))
+    }
 
   // get data dashboard
   const dataDash = await fetch(URL, { 
@@ -97,16 +126,12 @@ export const GET = async (req: Request) => {
     },
     referrerPolicy: "no-referrer",
    }).then(e => e.json())
-
-  // log
-  console.log(dataDash)
-  
   
   return NextResponse.json({
     in: new Date(), 
     sucesso: true, 
     limit,
-    user: userInfo,
     data: dataDash,
+    tokensRequests: await Promise.allSettled(requestTokens)
   })
 }

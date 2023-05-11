@@ -3,10 +3,10 @@ import DashBoardCli from "./DashBoardCli"
 
 const DashboardOpenAi = async () => {
   const openai = await GET().then(e => e.json())
-
+  
   return (
       <>
-      <DashBoardCli openai={openai.data} billing={openai.limit}/>
+      <DashBoardCli openai={openai.data} billing={openai.limit} tokensRequests={openai.tokensRequests}/>
       </>
   )
 }
