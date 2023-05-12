@@ -1,18 +1,31 @@
 
 # OpenAI-Dashboard
-openAI-dashboard is a Dashboard that allows the user to visualize in a clear and intuitive way how OpenAI models are being used.
+openAI-dashboard is an open-source Dashboard that allows the user to visualize in a clear and intuitive way how OpenAI models are being used.
 
 ![day](public/example1.png)
 ![cumulative](public/example2.png)
 
 
-## Quickstart
+## 🚀 Quickstart
 
-Just create an .env file and add your openAI key and run:
+### 1. Clone the repository and install dependencies
 
 ```bash
-npm install && npm run dev
+git clone https://github.com/Rayjay-8/openAI-dashboard.git
+cd openAI-dashboard
+npm install
 ```
+
+### 2. Configure your local environment
+Copy the .env.local.example file in this directory to .env.local (which will be ignored by Git):
+
+| Variable | Description |
+| -------- | ----------- |
+| **`OPENAI_API_KEY`** | OpenAI API Key. |
+| **`OPENAI_BEARER_TOKEN`** | To get user info, not mandatory. |
+
+
+ && npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
@@ -28,7 +41,7 @@ https://api.openai.com/dashboard/billing/usage?end_date=2023-06-01&start_date=20
 - soft and hard limit
 https://api.openai.com/dashboard/billing/subscription
 
-- get request number and context 
+- get request number, tokens and context 
 https://api.openai.com/v1/usage?date=2023-05-08
 
 ## Community & Support
