@@ -24,8 +24,10 @@ Copy the .env.local.example file in this directory to .env.local (which will be 
 | **`OPENAI_API_KEY`** | OpenAI API Key. |
 | **`OPENAI_BEARER_TOKEN`** | To get user info, not mandatory. |
 
-
- && npm run dev
+### 3. Run
+```bash
+ npm run dev
+```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
