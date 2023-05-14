@@ -22,6 +22,7 @@ Copy the .env.local.example file in this directory to .env.local (which will be 
 | Variable | Description |
 | -------- | ----------- |
 | **`OPENAI_API_KEY`** | OpenAI API Key. |
+| **`OPENAI_API_KEY_1...2`** | for multi keys |
 | **`OPENAI_BEARER_TOKEN`** | To get user info, not mandatory. |
 
 ### 3. Run
