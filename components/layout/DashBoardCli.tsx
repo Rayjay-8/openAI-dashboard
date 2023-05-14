@@ -3,14 +3,10 @@ import React, { useState } from "react";
 import {
   Metric,
   Grid,
-  Col,
   Card,
   Title,
   DonutChart,
   BarChart,
-  Subtitle,
-  DateRangePicker,
-  DateRangePickerValue,
   Legend,
   Flex,
   Text,
@@ -21,21 +17,17 @@ import {
   TabList,
   Tab,
   BarList,
+  Color,
 } from "@tremor/react";
 import {
-  CheckIcon,
-  CollectionIcon,
-  ReceiptRefundIcon,
-  ViewListIcon,
-  ChartPieIcon,
   UserGroupIcon,
   UserIcon,
 } from "@heroicons/react/outline";
 
-import { Billing, dataDash, tokensRequests } from "@/app/api/openai/route";
+import { Billing, Costs, tokensRequests } from "@/app/api/openai/WrapperAPI";
 
 // constantes
-const colors = ["blue", "amber", "rose", "indigo", "emerald", "pink", "teal"];
+const colors: Color[] = ["blue", "amber", "rose", "indigo", "emerald", "pink", "teal"];
 const monthNames = [
   "January",
   "February",
@@ -66,7 +58,7 @@ const calcporcentage = (total: number, x = 0) =>
 function calcularTotal(data) {
   const total = data.reduce((acc, obj) => {
     for (const key in obj) {
-      if (!["mes", "timestamp", "line_items"].includes(key)) {
+      if (!["label"].includes(key)) {
         acc[key] = (acc[key] || 0) + obj[key];
       }
     }
@@ -77,7 +69,7 @@ function calcularTotal(data) {
 }
 
 // To use this graph I must add up all the categories
-const DonutChartw = ({ categories, data, total, totalSemFormato, billing }) => {
+const DonutChartw = ({ data, total, totalSemFormato, billing }:{data: Array<any>, total: string, totalSemFormato: number, billing:Billing}) => {
   // graph total
   const totallll = calcularTotal(data);
   const sumTotal = formatoCerto(totallll);
@@ -116,7 +108,7 @@ const DonutChartw = ({ categories, data, total, totalSemFormato, billing }) => {
   );
 };
 
-const BarChartz = ({ data, categories, total }) => {
+const BarChartz = ({ data, categories, total }:{data: Array<any>, categories: Array<string>, total: string}) => {
   const [typeSelect, setTypeSelect] = useState<string>("2");
 
   return (
@@ -142,7 +134,7 @@ const BarChartz = ({ data, categories, total }) => {
             <BarChart
               className="mt-6"
               data={data}
-              index="mes"
+              index="label"
               categories={categories}
               colors={colors}
               valueFormatter={valueFormatter}
@@ -156,7 +148,7 @@ const BarChartz = ({ data, categories, total }) => {
             <AreaChart
               className="mt-6"
               data={data}
-              index="mes"
+              index="label"
               categories={categories}
               colors={colors}
               valueFormatter={valueFormatter}
@@ -268,7 +260,7 @@ const dataExemplo = [
   },
 ];
 
-function processArray(data) {
+function processArray(data: Array<any>) {
   const result = {};
   const dataOn = ["data", "dalle_api_data", "ft_data", "whisper_api_data"];
 
@@ -378,39 +370,17 @@ const Tokens = ({ tokens, keyUse = "n_generated_tokens_total" }) => {
 };
 
 interface propsDash {
-  openai: dataDash;
-  billing: Billing;
-  tokensRequests: tokensRequests;
+  limits: Billing;
+  tokensRequests: tokensRequests[];
+  costs: Costs
 }
 const DashBoardCli = (props: propsDash) => {
-  console.log(props)
   const {
-    openai,
-    billing,
+    limits,
     tokensRequests,
   } = props
 
-  const formatado = openai.daily_costs?.map((e) => {
-    const data = new Date(e.timestamp * 1000);
-    e.mes = monthNames[data.getMonth()] + " " + data.getDate();
-    const final: any = {};
-    e.line_items?.forEach((e: { name: string; cost: number }) => {
-      final[e.name] = e.cost / 100;
-      categories.add(e.name);
-    });
-    // delete e.line_items
-    // delete e.timestamp
-    e = { ...e, ...final };
-    return e;
-  });
-
-  const usoTotal = (openai.total_usage ?? 0) / 100;
-  const TotalFormadado = usoTotal.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  if (!formatado) {
+  if (!props.costs) {
     return (
       <>
         <div className="mx-auto max-w-md text-center">
@@ -425,28 +395,37 @@ const DashBoardCli = (props: propsDash) => {
       </>
     );
   }
-
   const formattedprocess = processArray(tokensRequests);
+
+  const costsNameValue = props.costs.costsList.map(e => {
+    const nameAndTotal:any = {
+      label: e.label
+    }
+    e.items.forEach(item => {
+      nameAndTotal[item.name] = item.cost / 100
+    })
+
+    return(nameAndTotal)
+  })
+
 
   return (
     <>
-      <Title>OpenAI Analytics</Title>
       <div className="grid w-full gap-3 px-2 py-2">
         <BarChartz
-          data={formatado}
-          total={TotalFormadado}
-          categories={Array.from(categories)}
+          data={costsNameValue}
+          total={props.costs.totalUsageFormatted}
+          categories={props.costs.modelsName}
         />
         <Grid numCols={1} numColsLg={3} className="gap-4">
           <DonutChartw
-            data={formatado}
-            totalSemFormato={usoTotal}
-            total={TotalFormadado}
-            categories={Array.from(categories)}
-            billing={billing}
+            data={costsNameValue}
+            totalSemFormato={props.costs.totalUsage}
+            total={props.costs.totalUsageFormatted}
+            billing={limits}
           />
 
-          <Requests tokens={formattedprocess} />
+          <Requests tokens={formattedprocess} /> 
           <Tokens tokens={formattedprocess} />
         </Grid>
       </div>
