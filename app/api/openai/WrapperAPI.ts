@@ -184,7 +184,10 @@ export interface Costs {
 }
 
 function formatCosts(arrayCosts:DailyCostsEntity[]):costsProps[]{
+  if(!arrayCosts) return []
+
   const resp = arrayCosts.map(cost => {
+    if(!cost) return ({label: "erro", items:[], timestamp: "", sum: 0})
     const toDate = new Date(cost.timestamp * 1000);
     const finalCost:costsProps = {
       label: monthNames[toDate.getMonth()] + " " + toDate.getDate(),

@@ -28,21 +28,6 @@ import { Billing, Costs, tokensRequests } from "@/app/api/openai/WrapperAPI";
 
 // constantes
 const colors: Color[] = ["blue", "amber", "rose", "indigo", "emerald", "pink", "teal"];
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const categories = new Set();
 
 const valueFormatter = (number: number) =>
   `$ ${Intl.NumberFormat("us").format(number).toString()}`;
@@ -266,7 +251,7 @@ function processArray(data: Array<any>) {
 
   for (const item of data) {
     const hasData = dataOn.some((key) => {
-      return item.value[key].length > 0;
+      return item.value?.[key]?.length > 0;
     });
 
     if (hasData) {
