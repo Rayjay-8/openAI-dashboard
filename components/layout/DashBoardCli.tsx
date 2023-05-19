@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Metric,
   Grid,
@@ -93,8 +93,53 @@ const DonutChartw = ({ data, total, totalSemFormato, billing }:{data: Array<any>
   );
 };
 
+
+interface DataItem {
+   label: string;
+   "Instruct models": number;
+   "Chat models": number;
+   "GPT-4": number;
+   "Fine-tuned models": number;
+   "Embedding models": number;
+   "Image models": number;
+   "Audio models": number;
+ }
+
+ function convertData(input: DataItem[]): DataItem[] {
+   const output: DataItem[] = [];
+ 
+     let totalItem: DataItem = {
+     label: "",
+     "Instruct models": 0,
+     "Chat models": 0,
+     "GPT-4": 0,
+     "Fine-tuned models": 0,
+     "Embedding models": 0,
+     "Image models": 0,
+     "Audio models": 0,
+   };
+ 
+ for (const item of input) {
+     totalItem = {
+       label: item.label,
+       "Instruct models": totalItem["Instruct models"] + item["Instruct models"],
+       "Chat models": totalItem["Chat models"] + item["Chat models"],
+       "GPT-4": totalItem["GPT-4"] + item["GPT-4"],
+       "Fine-tuned models": totalItem["Fine-tuned models"] + item["Fine-tuned models"],
+       "Embedding models": totalItem["Embedding models"] + item["Embedding models"],
+       "Image models": totalItem["Image models"] + item["Image models"],
+       "Audio models": totalItem["Audio models"] + item["Audio models"],
+     };
+ 
+     output.push(totalItem);
+   }
+   return output;
+ }
+ 
+
 const BarChartz = ({ data, categories, total }:{data: Array<any>, categories: Array<string>, total: string}) => {
   const [typeSelect, setTypeSelect] = useState<string>("2");
+  const cumulative = useMemo(() => convertData(data), [])
 
   return (
     <>
@@ -132,7 +177,7 @@ const BarChartz = ({ data, categories, total }:{data: Array<any>, categories: Ar
           {typeSelect === "3" && (
             <AreaChart
               className="mt-6"
-              data={data}
+              data={cumulative}
               index="label"
               categories={categories}
               colors={colors}
